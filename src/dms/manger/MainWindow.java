@@ -32,6 +32,8 @@ public class MainWindow {
 	private JPanel btnPanel;
 	private SpringLayout springLayout;
 	private JButton searchBtn;
+	JDatePanelImpl datePanel;
+	JDatePickerImpl datePicker;
 	//private JDatePicker datePicker;
 	
 	// database variables
@@ -122,8 +124,8 @@ public class MainWindow {
         p.put("text.month", "Month");
         p.put("text.year", "Year");
         
-        JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
-        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        datePanel = new JDatePanelImpl(model, p);
+        datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
         SpringLayout springLayout_1 = (SpringLayout) datePicker.getLayout();
         datePicker.setMaximumSize(new Dimension(100, 23));
         datePicker.setSize(100, 20);
@@ -146,74 +148,6 @@ public class MainWindow {
 	}
 	boolean getServerLogs() {
 		
-		return true;
-	}
-	boolean connectDB() {
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	    //url串
-	    String url = "jdbc:oracle:thin:@172.29.19.164:1521:ora1";
-	    //连接数据库的url串,用户密码,用户名;
-	    //创建数据库通道
-		Statement stmt = null;
-		try {
-			Connection conn = DriverManager.getConnection(url,"system","open123");
-			stmt = conn.createStatement();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	    //创建数据库结果集
-		ResultSet rs = null;
-	    try {
-			rs = stmt.executeQuery("select * from matched_record");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	    ArrayList<String> tables = new ArrayList<String>();
-	    try {
-			while (rs.next()) {
-				tables.add(rs.getString(2));
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	    for (String s : tables) {
-	    	System.out.println(s);
-	    }
-	    
-		return true;
-	}
-	/*
-	 * 连接数据库
-	 * 参数：无
-	 */
-	public boolean connDataBase(String usr, String pwd, String dbn) {
-		user = usr;
-		password = pwd;
-		url = "jdbc:mysql://localhost:3306/" + dbn;	
-		try {
-			Class.forName(driver);
-			conn = DriverManager.getConnection(url, user, password);
-			
-			if (!conn.isClosed())
-				return true;
-				//JOptionPane.showMessageDialog(null, "Connection Success!");
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
 		return true;
 	}
 }
