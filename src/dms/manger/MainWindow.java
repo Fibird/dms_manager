@@ -10,6 +10,8 @@ import java.awt.*;
 import java.util.*;
 import javax.swing.JButton;
 import java.awt.event.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 public class MainWindow {
 
@@ -100,7 +102,9 @@ public class MainWindow {
         dateField.setHorizontalAlignment ( SwingConstants.CENTER );
         
         btnPanel.add(dateField);
-		
+        
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		dateField.setDateFormat((SimpleDateFormat) dateFormat);
 		searchBtn = new JButton("Search");
 		btnPanel.add(searchBtn);
 		
@@ -110,7 +114,7 @@ public class MainWindow {
 		horizontalGlue_1.setMaximumSize(new Dimension(1000, 0));
 		btnPanel.add(horizontalGlue_1);
 		
-		showFormsBtn = new JButton("Forms");
+		showFormsBtn = new JButton("show Forms");
 		btnPanel.add(showFormsBtn);
 	}
 	boolean getServerLogs() {
