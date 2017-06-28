@@ -1,17 +1,17 @@
 package dms.manger;
 
-import com.alee.extended.date.WebDateField;
-import java.awt.EventQueue;
-import javax.swing.JFrame;
-import com.alee.laf.WebLookAndFeel;
-import com.alee.laf.panel.WebPanel;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import javax.swing.JButton;
 import java.awt.event.*;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import javax.swing.table.DefaultTableModel;
+
+import com.alee.extended.date.WebDateField;
+import com.alee.laf.WebLookAndFeel;
+import com.alee.laf.panel.WebPanel;
+
 
 public class MainWindow {
 
@@ -22,6 +22,10 @@ public class MainWindow {
 	private JPanel btnPanel;
 	private JButton searchBtn;
 	private WebDateField dateField;
+	//private JScrollPanel tablePanel;
+	private JTable logInfoTable;
+	private DefaultTableModel logInfoTableModel;
+	private JScrollPane tableScrollPanel;
 
 	/**
 	 * Launch the application.
@@ -62,8 +66,15 @@ public class MainWindow {
 		
 		infoPanel = new WebPanel();
 		frmMainWindow.getContentPane().add(infoPanel, BorderLayout.CENTER);
-		infoPanel.setLayout(null);
 		
+		String[] columnNames = {"user", "IP", "duration", "pid", "date"};
+		logInfoTableModel = new DefaultTableModel(null, columnNames);
+		infoPanel.setLayout(new BorderLayout(0, 0));
+		logInfoTable = new JTable(logInfoTableModel);
+		
+		tableScrollPanel = new JScrollPane(logInfoTable);
+		infoPanel.add(tableScrollPanel);
+
 		btnPanel = new JPanel();
 		btnPanel.setMinimumSize(new Dimension(100, 100));
 		frmMainWindow.getContentPane().add(btnPanel, BorderLayout.NORTH);
@@ -83,11 +94,11 @@ public class MainWindow {
 		btnPanel.add(verticalStrut);
 		btnPanel.add(freshBtn);
 		
-		Component horizontalGlue = Box.createHorizontalGlue();
-		horizontalGlue.setPreferredSize(new Dimension(300, 0));
-		horizontalGlue.setMinimumSize(new Dimension(300, 0));
-		horizontalGlue.setMaximumSize(new Dimension(1000, 0));
-		btnPanel.add(horizontalGlue);
+		Component leftHGlue = Box.createHorizontalGlue();
+		leftHGlue.setPreferredSize(new Dimension(300, 0));
+		leftHGlue.setMinimumSize(new Dimension(300, 0));
+		leftHGlue.setMaximumSize(new Dimension(1000, 0));
+		btnPanel.add(leftHGlue);
 		
 		Component rigidArea_1 = Box.createRigidArea(new Dimension(20, 20));
 		rigidArea_1.setMinimumSize(new Dimension(20, 40));
@@ -108,11 +119,11 @@ public class MainWindow {
 		searchBtn = new JButton("Search");
 		btnPanel.add(searchBtn);
 		
-		Component horizontalGlue_1 = Box.createHorizontalGlue();
-		horizontalGlue_1.setMinimumSize(new Dimension(300, 0));
-		horizontalGlue_1.setPreferredSize(new Dimension(300, 0));
-		horizontalGlue_1.setMaximumSize(new Dimension(1000, 0));
-		btnPanel.add(horizontalGlue_1);
+		Component rightHGlue = Box.createHorizontalGlue();
+		rightHGlue.setMinimumSize(new Dimension(260, 0));
+		rightHGlue.setPreferredSize(new Dimension(260, 0));
+		rightHGlue.setMaximumSize(new Dimension(1000, 0));
+		btnPanel.add(rightHGlue);
 		
 		showFormsBtn = new JButton("show Forms");
 		btnPanel.add(showFormsBtn);
