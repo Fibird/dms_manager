@@ -3,7 +3,6 @@ package dms.manger;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
-import javax.swing.JButton;
 import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import javax.swing.table.DefaultTableModel;
@@ -59,7 +58,7 @@ public class MainWindow {
 		dp = new DataProcess();
 		dba = new DBAccess();
 //		dba.connDataBase();
-//		dp.updateData();
+		dp.updateData();
 	}
 
 	/**
@@ -138,7 +137,9 @@ public class MainWindow {
 					for (UserInfo u : ts.getList()) {
 						logInfoTableModel.addRow(new Object [] {u.getUserName(), u.getLogIp(), u.getDuration(), u.getPid(), u.getNormalLogDate()});
 					}
-				}			
+				} else {
+					JOptionPane.showMessageDialog(null, "No Data!");
+				}
 			}
 		});
 		btnPanel.add(searchBtn);
