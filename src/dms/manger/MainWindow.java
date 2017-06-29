@@ -12,9 +12,13 @@ import com.alee.extended.date.WebDateField;
 import com.alee.laf.WebLookAndFeel;
 import com.alee.laf.panel.WebPanel;
 
+import dms.manger.data.UserInfo;
+import dms.manger.data.UserSet;
+import dms.manger.db.DBAccess;
+
 
 public class MainWindow {
-
+	// components in ui
 	private JFrame frmMainWindow;
 	private WebPanel infoPanel;
 	private JButton showFormsBtn;
@@ -26,7 +30,9 @@ public class MainWindow {
 	private JTable logInfoTable;
 	private DefaultTableModel logInfoTableModel;
 	private JScrollPane tableScrollPanel;
-
+	// variables for data process
+	DataProcess dp;
+	DBAccess dba;
 	/**
 	 * Launch the application.
 	 */
@@ -50,6 +56,9 @@ public class MainWindow {
 	 */
 	public MainWindow() {
 		initialize();
+		dp = new DataProcess();
+		dba = new DBAccess();
+		dp.updateData();
 	}
 
 	/**
@@ -84,6 +93,7 @@ public class MainWindow {
 		freshBtn.setActionCommand("");
 		freshBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
 			}
 		});
 		
@@ -117,6 +127,18 @@ public class MainWindow {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		dateField.setDateFormat((SimpleDateFormat) dateFormat);
 		searchBtn = new JButton("Search");
+		searchBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				UserSet ts = dp.getUserSet(dateField.getDate().getTime());
+				//System.out.println( dateField.getDate().getTime());
+				clearLogTable();
+				if (ts != null) {
+					for (UserInfo u : ts.getList()) {
+						logInfoTableModel.addRow(new Object [] {u.getUserName(), u.getLogIp(), u.getDuration(), u.getPid(), u.getNormalLogDate()});
+					}
+				}			
+			}
+		});
 		btnPanel.add(searchBtn);
 		
 		Component rightHGlue = Box.createHorizontalGlue();
@@ -131,5 +153,10 @@ public class MainWindow {
 	boolean getServerLogs() {
 		
 		return true;
+	}
+	void clearLogTable() {
+		while (logInfoTableModel.getRowCount() != 0) {
+			logInfoTableModel.removeRow(0);
+		}
 	}
 }

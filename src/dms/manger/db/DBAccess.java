@@ -56,7 +56,23 @@ public class DBAccess {
 		driver = "oracle.jdbc.driver.OracleDriver";
 	}
 	
-	
+	void SetLogInfo(String usr, String pwd) {
+		user = usr;
+		password = pwd;
+	}
+	public DBAccess() {
+		// TODO Auto-generated constructor stub
+		cfg = new Config("config/config.properties");
+		// get config info from config file
+		tableName = cfg.getProperty("tableName");
+		DBName = cfg.getProperty("DBName");
+		serverIp = cfg.getProperty("IP");
+		// init oracle connection info
+		url = "jdbc:oracle:thin:@" + serverIp + ":1521:" + DBName;
+		driver = "oracle.jdbc.driver.OracleDriver";
+	}
+
+
 	/*
 	 * 连接数据库
 	 * 参数：无

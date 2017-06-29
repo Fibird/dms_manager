@@ -4,10 +4,11 @@
 package dms.manger;
 
 import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
-import dms.manger.data.DateDataSet;
-import dms.manger.data.MatchedLogRec;
-import dms.manger.data.UserInfo;
+import dms.manger.data.*;
 
 /**
  * @author bird
@@ -15,6 +16,7 @@ import dms.manger.data.UserInfo;
  */
 public class DataProcess {
 	DateDataSet dateDataSet;
+
 	/**
 	 * 
 	 */
@@ -22,7 +24,7 @@ public class DataProcess {
 		// TODO Auto-generated constructor stub
 		dateDataSet = new DateDataSet();
 	}
-	
+
 	public void updateData() {
 		File f = new File("cache/logs.txt");
 		BufferedReader input = null;
@@ -32,9 +34,9 @@ public class DataProcess {
 			input = new BufferedReader(new FileReader(f));
 			while ((cl = input.readLine()) != null) {
 				String[] splited = cl.split("\\s+");
-				
+				dateDataSet.insert(processData(splited));
 			}
-			//input.
+			// input.
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -45,22 +47,42 @@ public class DataProcess {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
 	}
-	}
-	UserInfo processData(String[] s) {
+
+	public UserInfo processData(String[] s) {
 		String usr = s[0];
-		int logDate = Integer.parseInt(s[3]);
-		int dur = Integer.parseInt(s[4]);
+		long logDate = Long.parseLong(s[3]);
+		long dur = Long.parseLong(s[4]);
 		String ip = s[5];
 		int pid = Integer.parseInt(s[1]);
-		return new UserInfo(usr, logDate, pid, ip, dur);
+		return new UserInfo(usr, timeRoundToDay(logDate), pid, ip, dur);
 	}
+	
+	public UserSet getUserSet(long key) {
+		return dateDataSet.getUserSet(key);
+	}
+	private long timeRoundToDay(long t) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String sd = sdf.format(t * 1000);
+		Date date = null;
+		try {		
+			date = sdf.parse(sd);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return date.getTime();
+	}
+
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		
+		DataProcess dp = new DataProcess();
+		dp.updateData();
+		System.out.println("update succeeded.");
+		System.out.println(dp.dateDataSet.toString());
 	}
-
 }

@@ -3,20 +3,20 @@
  */
 package dms.manger.data;
 
-import java.util.Hashtable;
+import java.util.*;
 
 /**
  * @author bird
  *
  */
 public class DateDataSet {
-	Hashtable<Integer, UserSet> dateDataSet;
+	Hashtable<Long, UserSet> dateDataSet;
 	/**
 	 * 
 	 */
 	public DateDataSet() {
 		// TODO Auto-generated constructor stub
-		dateDataSet = new Hashtable();
+		dateDataSet = new Hashtable<Long, UserSet>();
 	}
 	
 	public void insert(UserInfo userInfo) {
@@ -29,8 +29,23 @@ public class DateDataSet {
 			usrSet.insert(userInfo);
 		}	
 	}
-	private UserSet getUserSet(int date) {
+	public UserSet getUserSet(long date) {
 		return (UserSet)dateDataSet.get(date);
+	}
+	
+	public String toString() {
+		ArrayList<String> s = new ArrayList<String>();
+
+		for (Iterator<Long> it = dateDataSet.keySet().iterator(); it.hasNext();) {
+			long tmp = it.next();
+			if (dateDataSet.get(tmp) != null) {
+				s.add(tmp + "\n");
+				s.add(dateDataSet.get(tmp).toString());
+				s.add("\n");
+			}
+			
+		}
+		return s.toString();
 	}
 	
 	/**
@@ -38,6 +53,6 @@ public class DateDataSet {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
+		
 	}
 }
