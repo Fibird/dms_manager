@@ -10,6 +10,8 @@ import javax.swing.table.DefaultTableModel;
 import com.alee.extended.date.WebDateField;
 import com.alee.laf.WebLookAndFeel;
 import com.alee.laf.panel.WebPanel;
+import com.alee.laf.splitpane.WebSplitPane;
+import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
 
 import dms.manger.data.UserInfo;
 import dms.manger.data.UserSet;
@@ -20,6 +22,7 @@ public class MainWindow {
 	// components in ui
 	JFrame frmMainWindow;
 	private WebPanel infoPanel;
+	private WebPanel formPanel;
 	private JButton showFormsBtn;
 	private JButton freshBtn;
 	private JPanel btnPanel;
@@ -32,6 +35,9 @@ public class MainWindow {
 	// variables for data process
 	DataProcess dp;
 	DBAccess dba;
+	private JTabbedPane tabbedPane;
+	private JPanel monthFormPanel;
+	private JPanel yearFormPanel;
 	/**
 	 * Launch the application.
 	 */
@@ -65,7 +71,7 @@ public class MainWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		WebLookAndFeel.install ();
+		WebLookAndFeel.install();
 		WebLookAndFeel.initializeManagers ();
 		frmMainWindow = new JFrame();
 		frmMainWindow.setIconImage(Toolkit.getDefaultToolkit().getImage("images/mainwindow.ico"));
@@ -74,7 +80,20 @@ public class MainWindow {
 		frmMainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		infoPanel = new WebPanel();
-		frmMainWindow.getContentPane().add(infoPanel, BorderLayout.CENTER);
+		formPanel = new WebPanel();
+		WebSplitPane splitPane = new WebSplitPane(HORIZONTAL_SPLIT, infoPanel, formPanel);
+		
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		formPanel.add(tabbedPane, BorderLayout.CENTER);
+		
+		monthFormPanel = new JPanel();
+		tabbedPane.addTab("Month Form", null, monthFormPanel, null);
+		
+		yearFormPanel = new JPanel();
+		tabbedPane.addTab("Year Form", null, yearFormPanel, null);
+		splitPane.setContinuousLayout(true);
+		splitPane.setOneTouchExpandable(true);
+		frmMainWindow.getContentPane().add(splitPane, BorderLayout.CENTER);
 		
 		String[] columnNames = {"user", "IP", "duration", "pid", "date"};
 		logInfoTableModel = new DefaultTableModel(null, columnNames);
@@ -138,7 +157,7 @@ public class MainWindow {
 						logInfoTableModel.addRow(new Object [] {u.getUserName(), u.getLogIp(), u.getDuration(), u.getPid(), u.getNormalLogDate()});
 					}
 				} else {
-					JOptionPane.showMessageDialog(null, "No Data!");
+					JOptionPane.showMessageDialog(null, "Oops, No result to display!");
 				}
 			}
 		});
