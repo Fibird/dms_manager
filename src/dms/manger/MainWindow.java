@@ -19,7 +19,7 @@ import dms.manger.db.DBAccess;
 
 public class MainWindow {
 	// components in ui
-	private JFrame frmMainWindow;
+	JFrame frmMainWindow;
 	private WebPanel infoPanel;
 	private JButton showFormsBtn;
 	private JButton freshBtn;
@@ -58,7 +58,8 @@ public class MainWindow {
 		initialize();
 		dp = new DataProcess();
 		dba = new DBAccess();
-		dp.updateData();
+//		dba.connDataBase();
+//		dp.updateData();
 	}
 
 	/**
@@ -93,7 +94,8 @@ public class MainWindow {
 		freshBtn.setActionCommand("");
 		freshBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				dba.updateCache();
+				dp.updateData();
 			}
 		});
 		

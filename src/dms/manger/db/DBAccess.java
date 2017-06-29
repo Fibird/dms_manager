@@ -56,7 +56,7 @@ public class DBAccess {
 		driver = "oracle.jdbc.driver.OracleDriver";
 	}
 	
-	void SetLogInfo(String usr, String pwd) {
+	public void SetLogInfo(String usr, String pwd) {
 		user = usr;
 		password = pwd;
 	}
