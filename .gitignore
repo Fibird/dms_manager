@@ -60,4 +60,7 @@ local.properties
 # JDT-specific (Eclipse Java Development Tools)		
 .classpath
 
+# file of program
+config/
+cache/
 # End of https://www.gitignore.io/api/eclipse

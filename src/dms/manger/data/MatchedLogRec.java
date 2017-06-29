@@ -39,8 +39,8 @@ public class MatchedLogRec {
 	}
 	@Override
 	public String toString() {
-		return "MatchedLogRec [logName=" + logName + ", pid=" + pid + ", loginTime=" + loginTime + ", logoutTime="
-				+ logoutTime + ", duration=" + duration + ", logIp=" + logIp + "]";
+		return logName + "\t" + pid + "\t" + loginTime + "\t"
+				+ logoutTime + "\t" + duration + "\t" + logIp;
 	}
 	public String getLogName() {
 		return logName;
