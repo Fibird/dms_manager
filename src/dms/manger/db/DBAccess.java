@@ -119,15 +119,14 @@ public class DBAccess {
 	 * pull data from server
 	 */
 	private ArrayList<MatchedLogRec> pullServerData() {
-		String getAllData = "select * from matched_record";
+		String getAllData = "select * from " + tableName;
 		ResultSet rs = null;
 		ArrayList<MatchedLogRec> logs = new ArrayList<MatchedLogRec>();
 		try {
 			Statement getDataSet = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
 			rs = getDataSet.executeQuery(getAllData);
-			rs.last();
-			System.out.println(rs.getRow());
+
 			while (rs.next()) {
 				String usr = rs.getString(2);
 				int pid = rs.getInt(3);
@@ -135,10 +134,11 @@ public class DBAccess {
 				int logOutTime = rs.getInt(5);
 				int duration = rs.getInt(6);
 				String ip = rs.getString(7);
-				MatchedLogRec mgr = new MatchedLogRec(usr, pid, logInTime, logOutTime, duration, ip);
-				
+				MatchedLogRec mgr = new MatchedLogRec(usr, pid, logInTime, logOutTime, duration, ip);				
 				logs.add(mgr);
 			}
+			rs.last();
+			System.out.println("logs numbers: " + rs.getRow());
 			DBAccess.freeRsSt(rs, getDataSet);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
