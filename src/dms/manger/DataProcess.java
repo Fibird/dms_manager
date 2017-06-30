@@ -24,7 +24,10 @@ public class DataProcess {
 		// TODO Auto-generated constructor stub
 		dateDataSet = new DateDataSet();
 	}
-
+	
+	public DateDataSet getDateDataSet() {
+		return dateDataSet;
+	}
 	public void updateData() {
 		File f = new File("cache/logs.txt");
 		BufferedReader input = null;

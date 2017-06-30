@@ -10,7 +10,7 @@ import java.util.*;
  *
  */
 public class DateDataSet {
-	Hashtable<Long, UserSet> dateDataSet;
+	private Hashtable<Long, UserSet> dateDataSet;
 	/**
 	 * 
 	 */
@@ -19,6 +19,9 @@ public class DateDataSet {
 		dateDataSet = new Hashtable<Long, UserSet>();
 	}
 	
+	public Hashtable<Long, UserSet> getDateSet() {
+		return dateDataSet;
+	}
 	public void insert(UserInfo userInfo) {
 		UserSet usrSet = getUserSet(userInfo.getLogDate());
 		if (usrSet == null) {

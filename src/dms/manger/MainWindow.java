@@ -13,9 +13,12 @@ import com.alee.laf.panel.WebPanel;
 import com.alee.laf.splitpane.WebSplitPane;
 import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
 
+import dms.manger.chart.LineChartPanel;
+import dms.manger.data.FormData;
 import dms.manger.data.UserInfo;
 import dms.manger.data.UserSet;
 import dms.manger.db.DBAccess;
+import com.alee.extended.date.DateSelectionListener;
 
 
 public class MainWindow {
@@ -38,6 +41,7 @@ public class MainWindow {
 	private JTabbedPane tabbedPane;
 	private JPanel monthFormPanel;
 	private JPanel yearFormPanel;
+	private LineChartPanel lcp;
 	/**
 	 * Launch the application.
 	 */
@@ -60,11 +64,11 @@ public class MainWindow {
 	 * Create the application.
 	 */
 	public MainWindow() {
-		initialize();
 		dp = new DataProcess();
 		dba = new DBAccess();
 //		dba.connDataBase();
 		dp.updateData();
+		initialize();
 	}
 
 	/**
@@ -137,6 +141,12 @@ public class MainWindow {
        
         // Simple date field
         dateField = new WebDateField ( new Date () );
+        dateField.addDateSelectionListener(new DateSelectionListener() {
+        	public void dateSelected(Date arg0) {
+        		lcp.updateDataSet(createMonthDataSet(), "Month " + dateField.getDate().getMonth());
+        	}
+        });
+        
         dateField.setMinimumSize(new Dimension(100, 23));
         dateField.setPreferredSize(new Dimension(100, 26));
         dateField.setMaximumSize(new Dimension(100, 23));
@@ -171,6 +181,9 @@ public class MainWindow {
 		
 		showFormsBtn = new JButton("show Forms");
 		btnPanel.add(showFormsBtn);
+		lcp = new LineChartPanel("Month Form", "month", monthFormPanel.getPreferredSize());
+		lcp.updateDataSet(createMonthDataSet(), "Month " + dateField.getDate().getMonth());
+		monthFormPanel.add(lcp.getChartPanel(), BorderLayout.CENTER);
 	}
 	boolean getServerLogs() {
 		
@@ -180,5 +193,71 @@ public class MainWindow {
 		while (logInfoTableModel.getRowCount() != 0) {
 			logInfoTableModel.removeRow(0);
 		}
+	}
+	public ArrayList<FormData> createMonthDataSet() {
+		ArrayList<FormData> monthDataSet = new ArrayList<FormData>();
+			
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar cdr = Calendar.getInstance();
+		cdr.setTime(dateField.getDate());
+		cdr.set(Calendar.DAY_OF_MONTH, 1);
+		long lowLimit = cdr.getTimeInMillis();
+		cdr.set(Calendar.DAY_OF_MONTH, cdr.getActualMaximum(Calendar.DAY_OF_MONTH));
+		long upLimit = cdr.getTimeInMillis();
+//		System.out.println(lowLimit + "-" + upLimit);
+		Hashtable<Long, UserSet> ds = dp.getDateDataSet().getDateSet();
+		long d = lowLimit;
+		int i = 0;
+
+		for (long day = lowLimit; day <= upLimit; day = day + 24 * 3600 * 1000) {
+			FormData fd = new FormData();		
+			fd.setxAxisData(day);		
+			UserSet us = ds.get(day);
+			if (us != null) {
+					long dur = 0;
+					for (UserInfo u : us.getList()) {
+						dur += u.getDuration();
+					}
+					dur /= 3600;
+					fd.setyAxisData(dur);
+				} else {
+					fd.setyAxisData(0);
+				}						
+			monthDataSet.add(fd);
+		}
+		return monthDataSet;
+	}
+	public ArrayList<FormData> createYearDataSet() {
+		ArrayList<FormData> monthDataSet = new ArrayList<FormData>();
+			
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar cdr = Calendar.getInstance();
+		cdr.setTime(dateField.getDate());
+		cdr.set(Calendar.DAY_OF_MONTH, 1);
+		long lowLimit = cdr.getTimeInMillis();
+		cdr.set(Calendar.DAY_OF_MONTH, cdr.getActualMaximum(Calendar.DAY_OF_MONTH));
+		long upLimit = cdr.getTimeInMillis();
+//		System.out.println(lowLimit + "-" + upLimit);
+		Hashtable<Long, UserSet> ds = dp.getDateDataSet().getDateSet();
+		long d = lowLimit;
+		int i = 0;
+
+		for (long day = lowLimit; day <= upLimit; day = day + 24 * 3600 * 1000) {
+			FormData fd = new FormData();		
+			fd.setxAxisData(day);		
+			UserSet us = ds.get(day);
+			if (us != null) {
+					long dur = 0;
+					for (UserInfo u : us.getList()) {
+						dur += u.getDuration();
+					}
+					dur /= 3600;
+					fd.setyAxisData(dur);
+				} else {
+					fd.setyAxisData(0);
+				}						
+			monthDataSet.add(fd);
+		}
+		return monthDataSet;
 	}
 }
