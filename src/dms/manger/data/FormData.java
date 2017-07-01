@@ -10,6 +10,10 @@ import java.text.SimpleDateFormat;
  *
  */
 public class FormData {
+	@Override
+	public String toString() {
+		return "FormData [xAxisData=" + xAxisData + ", yAxisData=" + yAxisData + "]";
+	}
 	private long xAxisData;
 	private long yAxisData;
 	/**

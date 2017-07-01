@@ -20,7 +20,6 @@ import dms.manger.data.UserSet;
 import dms.manger.db.DBAccess;
 import com.alee.extended.date.DateSelectionListener;
 
-
 public class MainWindow {
 	// components in ui
 	JFrame frmMainWindow;
@@ -31,7 +30,7 @@ public class MainWindow {
 	private JPanel btnPanel;
 	private JButton searchBtn;
 	private WebDateField dateField;
-	//private JScrollPanel tablePanel;
+	// private JScrollPanel tablePanel;
 	private JTable logInfoTable;
 	private DefaultTableModel logInfoTableModel;
 	private JScrollPane tableScrollPanel;
@@ -41,18 +40,20 @@ public class MainWindow {
 	private JTabbedPane tabbedPane;
 	private JPanel monthFormPanel;
 	private JPanel yearFormPanel;
-	private LineChartPanel lcp;
+	private LineChartPanel mlcp;
+	private LineChartPanel ylcp;
+
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				
-				try {				
+
+				try {
 					MainWindow window = new MainWindow();
 					window.frmMainWindow.setVisible(true);
-					
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -66,7 +67,7 @@ public class MainWindow {
 	public MainWindow() {
 		dp = new DataProcess();
 		dba = new DBAccess();
-//		dba.connDataBase();
+		// dba.connDataBase();
 		dp.updateData();
 		initialize();
 	}
@@ -76,34 +77,36 @@ public class MainWindow {
 	 */
 	private void initialize() {
 		WebLookAndFeel.install();
-		WebLookAndFeel.initializeManagers ();
+		WebLookAndFeel.initializeManagers();
 		frmMainWindow = new JFrame();
 		frmMainWindow.setIconImage(Toolkit.getDefaultToolkit().getImage("images/mainwindow.ico"));
 		frmMainWindow.setTitle("DMS Manager");
 		frmMainWindow.setBounds(100, 100, 899, 600);
 		frmMainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		infoPanel = new WebPanel();
 		formPanel = new WebPanel();
 		WebSplitPane splitPane = new WebSplitPane(HORIZONTAL_SPLIT, infoPanel, formPanel);
-		
+
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		formPanel.add(tabbedPane, BorderLayout.CENTER);
-		
+
 		monthFormPanel = new JPanel();
+		monthFormPanel.setLayout(new BorderLayout(0, 0));
 		tabbedPane.addTab("Month Form", null, monthFormPanel, null);
-		
+
 		yearFormPanel = new JPanel();
+		yearFormPanel.setLayout(new BorderLayout(0, 0));
 		tabbedPane.addTab("Year Form", null, yearFormPanel, null);
 		splitPane.setContinuousLayout(true);
 		splitPane.setOneTouchExpandable(true);
 		frmMainWindow.getContentPane().add(splitPane, BorderLayout.CENTER);
-		
-		String[] columnNames = {"user", "IP", "duration", "pid", "date"};
+
+		String[] columnNames = { "user", "IP", "duration", "pid", "date" };
 		logInfoTableModel = new DefaultTableModel(null, columnNames);
 		infoPanel.setLayout(new BorderLayout(0, 0));
 		logInfoTable = new JTable(logInfoTableModel);
-		
+
 		tableScrollPanel = new JScrollPane(logInfoTable);
 		infoPanel.add(tableScrollPanel);
 
@@ -111,7 +114,7 @@ public class MainWindow {
 		btnPanel.setMinimumSize(new Dimension(100, 100));
 		frmMainWindow.getContentPane().add(btnPanel, BorderLayout.NORTH);
 		btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.X_AXIS));
-		
+
 		freshBtn = new JButton("Fresh");
 		freshBtn.setActionCommand("");
 		freshBtn.addActionListener(new ActionListener() {
@@ -120,51 +123,55 @@ public class MainWindow {
 				dp.updateData();
 			}
 		});
-		
+
 		Component verticalStrut = Box.createVerticalStrut(20);
 		verticalStrut.setPreferredSize(new Dimension(0, 40));
 		verticalStrut.setMinimumSize(new Dimension(0, 40));
 		verticalStrut.setMaximumSize(new Dimension(0, 40));
 		btnPanel.add(verticalStrut);
 		btnPanel.add(freshBtn);
-		
+
 		Component leftHGlue = Box.createHorizontalGlue();
 		leftHGlue.setPreferredSize(new Dimension(300, 0));
 		leftHGlue.setMinimumSize(new Dimension(300, 0));
 		leftHGlue.setMaximumSize(new Dimension(1000, 0));
 		btnPanel.add(leftHGlue);
-		
+
 		Component rigidArea_1 = Box.createRigidArea(new Dimension(20, 20));
 		rigidArea_1.setMinimumSize(new Dimension(20, 40));
 		rigidArea_1.setMaximumSize(new Dimension(20, 40));
 		rigidArea_1.setPreferredSize(new Dimension(10, 40));
-       
-        // Simple date field
-        dateField = new WebDateField ( new Date () );
-        dateField.addDateSelectionListener(new DateSelectionListener() {
-        	public void dateSelected(Date arg0) {
-        		lcp.updateDataSet(createMonthDataSet(), "Month " + dateField.getDate().getMonth());
-        	}
-        });
-        
-        dateField.setMinimumSize(new Dimension(100, 23));
-        dateField.setPreferredSize(new Dimension(100, 26));
-        dateField.setMaximumSize(new Dimension(100, 23));
-        dateField.setHorizontalAlignment ( SwingConstants.CENTER );
-        
-        btnPanel.add(dateField);
-        
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+		// Simple date field
+		dateField = new WebDateField(new Date());
+		dateField.addDateSelectionListener(new DateSelectionListener() {
+			public void dateSelected(Date arg0) {
+				SimpleDateFormat msdf = new SimpleDateFormat("MM");
+				mlcp.updateDataSet(createMonthDataSet(), msdf.format(dateField.getDate()));
+				SimpleDateFormat ysdf = new SimpleDateFormat("yyyy");
+				ylcp.updateDataSet(createYearDataSet(), "Year " + ysdf.format(dateField.getDate()));
+			}
+		});
+
+		dateField.setMinimumSize(new Dimension(100, 23));
+		dateField.setPreferredSize(new Dimension(100, 26));
+		dateField.setMaximumSize(new Dimension(100, 23));
+		dateField.setHorizontalAlignment(SwingConstants.CENTER);
+
+		btnPanel.add(dateField);
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		dateField.setDateFormat((SimpleDateFormat) dateFormat);
 		searchBtn = new JButton("Search");
 		searchBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				UserSet ts = dp.getUserSet(dateField.getDate().getTime());
-				//System.out.println( dateField.getDate().getTime());
+				// System.out.println( dateField.getDate().getTime());
 				clearLogTable();
 				if (ts != null) {
 					for (UserInfo u : ts.getList()) {
-						logInfoTableModel.addRow(new Object [] {u.getUserName(), u.getLogIp(), u.getDuration(), u.getPid(), u.getNormalLogDate()});
+						logInfoTableModel.addRow(new Object[] { u.getUserName(), u.getLogIp(), u.getDuration(),
+								u.getPid(), u.getNormalLogDate() });
 					}
 				} else {
 					JOptionPane.showMessageDialog(null, "Oops, No result to display!");
@@ -172,92 +179,95 @@ public class MainWindow {
 			}
 		});
 		btnPanel.add(searchBtn);
-		
+
 		Component rightHGlue = Box.createHorizontalGlue();
 		rightHGlue.setMinimumSize(new Dimension(260, 0));
 		rightHGlue.setPreferredSize(new Dimension(260, 0));
 		rightHGlue.setMaximumSize(new Dimension(1000, 0));
 		btnPanel.add(rightHGlue);
-		
+
 		showFormsBtn = new JButton("show Forms");
 		btnPanel.add(showFormsBtn);
-		lcp = new LineChartPanel("Month Form", "month", monthFormPanel.getPreferredSize());
-		lcp.updateDataSet(createMonthDataSet(), "Month " + dateField.getDate().getMonth());
-		monthFormPanel.add(lcp.getChartPanel(), BorderLayout.CENTER);
-	}
-	boolean getServerLogs() {
 		
+		mlcp = new LineChartPanel("Month Form", "month", monthFormPanel.getPreferredSize());
+		SimpleDateFormat msdf = new SimpleDateFormat("MM");
+		mlcp.updateDataSet(createMonthDataSet(), msdf.format(dateField.getDate()));
+		monthFormPanel.add(mlcp.getChartPanel(), BorderLayout.CENTER);
+		SimpleDateFormat ysdf = new SimpleDateFormat("yyyy");
+		ylcp = new LineChartPanel("Year Form", "year", yearFormPanel.getPreferredSize());
+		ylcp.updateDataSet(createYearDataSet(), "Year " + ysdf.format(dateField.getDate()));
+		yearFormPanel.add(ylcp.getChartPanel(), BorderLayout.CENTER);
+	}
+
+	boolean getServerLogs() {
+
 		return true;
 	}
+
 	void clearLogTable() {
 		while (logInfoTableModel.getRowCount() != 0) {
 			logInfoTableModel.removeRow(0);
 		}
 	}
+
 	public ArrayList<FormData> createMonthDataSet() {
 		ArrayList<FormData> monthDataSet = new ArrayList<FormData>();
-			
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
 		Calendar cdr = Calendar.getInstance();
 		cdr.setTime(dateField.getDate());
 		cdr.set(Calendar.DAY_OF_MONTH, 1);
 		long lowLimit = cdr.getTimeInMillis();
 		cdr.set(Calendar.DAY_OF_MONTH, cdr.getActualMaximum(Calendar.DAY_OF_MONTH));
 		long upLimit = cdr.getTimeInMillis();
-//		System.out.println(lowLimit + "-" + upLimit);
+		// System.out.println(lowLimit + "-" + upLimit);
 		Hashtable<Long, UserSet> ds = dp.getDateDataSet().getDateSet();
 		long d = lowLimit;
-		int i = 0;
 
 		for (long day = lowLimit; day <= upLimit; day = day + 24 * 3600 * 1000) {
-			FormData fd = new FormData();		
-			fd.setxAxisData(day);		
+			FormData fd = new FormData();
+			fd.setxAxisData(day);
 			UserSet us = ds.get(day);
 			if (us != null) {
-					long dur = 0;
-					for (UserInfo u : us.getList()) {
-						dur += u.getDuration();
-					}
-					dur /= 3600;
-					fd.setyAxisData(dur);
-				} else {
-					fd.setyAxisData(0);
-				}						
+				long dur = 0;
+				for (UserInfo u : us.getList()) {
+					dur += u.getDuration();
+				}
+				dur /= 3600;
+				fd.setyAxisData(dur);
+			} else {
+				fd.setyAxisData(0);
+			}
 			monthDataSet.add(fd);
 		}
 		return monthDataSet;
 	}
+
 	public ArrayList<FormData> createYearDataSet() {
-		ArrayList<FormData> monthDataSet = new ArrayList<FormData>();
-			
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		ArrayList<FormData> yearDataSet = new ArrayList<FormData>();
+		Hashtable<Long, UserSet> ds = dp.getDateDataSet().getDateSet();
 		Calendar cdr = Calendar.getInstance();
 		cdr.setTime(dateField.getDate());
-		cdr.set(Calendar.DAY_OF_MONTH, 1);
-		long lowLimit = cdr.getTimeInMillis();
-		cdr.set(Calendar.DAY_OF_MONTH, cdr.getActualMaximum(Calendar.DAY_OF_MONTH));
-		long upLimit = cdr.getTimeInMillis();
-//		System.out.println(lowLimit + "-" + upLimit);
-		Hashtable<Long, UserSet> ds = dp.getDateDataSet().getDateSet();
-		long d = lowLimit;
-		int i = 0;
-
-		for (long day = lowLimit; day <= upLimit; day = day + 24 * 3600 * 1000) {
-			FormData fd = new FormData();		
-			fd.setxAxisData(day);		
-			UserSet us = ds.get(day);
-			if (us != null) {
-					long dur = 0;
+		for (int i = 1; i <= 12; i++) {
+			FormData fd = new FormData();
+			cdr.set(Calendar.MONTH, i);
+			cdr.set(Calendar.DAY_OF_MONTH, 1);
+			long lowLimit = cdr.getTimeInMillis();
+			cdr.set(Calendar.DAY_OF_MONTH, cdr.getActualMaximum(Calendar.DAY_OF_MONTH));
+			long upLimit = cdr.getTimeInMillis();
+			long dur = 0;
+			for (long day = lowLimit; day <= upLimit; day = day + 24 * 3600 * 1000) {			
+				UserSet us = ds.get(day);
+				if (us != null) {
 					for (UserInfo u : us.getList()) {
 						dur += u.getDuration();
-					}
-					dur /= 3600;
-					fd.setyAxisData(dur);
-				} else {
-					fd.setyAxisData(0);
-				}						
-			monthDataSet.add(fd);
+					}		
+				} 
+			}
+			dur /= 1000;
+			fd.setxAxisData(i);
+			fd.setyAxisData(dur);
+			yearDataSet.add(fd);
 		}
-		return monthDataSet;
+		return yearDataSet;
 	}
 }
