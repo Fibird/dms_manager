@@ -15,6 +15,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import javax.swing.JOptionPane;
+
 import dms.manger.data.MatchedLogRec;
 import dms.manger.util.Config;
 
@@ -90,7 +92,8 @@ public class DBAccess {
 			return false;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Wrong password or network error!", "Oops!", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 		return true;

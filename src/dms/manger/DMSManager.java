@@ -31,12 +31,16 @@ public class DMSManager {
 		
 		if (value.btnValue) {			
 			MainWindow window = new MainWindow();
-			window.dba.SetLogInfo(value.usr, value.pwd);
-			if (window.dba.connDataBase()) {
-				window.dp.updateData();
+			window.getDba().SetLogInfo(value.usr, value.pwd);
+			if (window.connDataBase()) {
+				window.setHasLogined(true);
+				window.updateCache();
 				window.frmMainWindow.setVisible(true);				
 			} else {
-				System.out.println("Database connection failed!");
+				int res = JOptionPane.showConfirmDialog(null, "You can using me offline, do you want to login later?");
+				if (res == JOptionPane.YES_OPTION) {
+					window.frmMainWindow.setVisible(true);
+				}
 			}
 		}			
 	}

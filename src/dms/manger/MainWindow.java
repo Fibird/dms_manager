@@ -16,6 +16,7 @@ import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
 
 import dms.manger.chart.LineChartPanel;
 import dms.manger.data.FormData;
+import dms.manger.data.ReturnValues;
 import dms.manger.data.UserInfo;
 import dms.manger.data.UserSet;
 import dms.manger.db.DBAccess;
@@ -28,7 +29,6 @@ public class MainWindow {
 	JFrame frmMainWindow;
 	private WebPanel infoPanel;
 	private WebPanel formPanel;
-	private JButton showFormsBtn;
 	private JButton freshBtn;
 	private JPanel btnPanel;
 	private JButton searchBtn;
@@ -39,14 +39,46 @@ public class MainWindow {
 	private DefaultTableModel logInfoTableModel;
 	private JScrollPane tableScrollPanel;
 	// variables for data process
-	DataProcess dp;
-	DBAccess dba;
+	private DataProcess dp;
+
+	public DataProcess getDp() {
+		return dp;
+	}
+
+	public void setDp(DataProcess dp) {
+		this.dp = dp;
+	}
+
+	public DBAccess getDba() {
+		return dba;
+	}
+
+	public void setDba(DBAccess dba) {
+		this.dba = dba;
+	}
+
+	private DBAccess dba;
 	private JTabbedPane tabbedPane;
 	private JPanel monthFormPanel;
 	private JPanel yearFormPanel;
 	private LineChartPanel mlcp;
 	private LineChartPanel ylcp;
-	private JPanel panel;
+	private JPanel switchPanel;
+	private boolean hasLogined;
+	private JMenuBar menuBar;
+	private JMenu mnTool;
+	private JMenuItem mntmLogin;
+	private JMenuItem mntmExit;
+	private JMenu mnAbout;
+	private JMenuItem mntmAbout;
+
+	public boolean isHasLogined() {
+		return hasLogined;
+	}
+
+	public void setHasLogined(boolean hasLogined) {
+		this.hasLogined = hasLogined;
+	}
 
 	/**
 	 * Launch the application.
@@ -83,6 +115,7 @@ public class MainWindow {
 	private void initialize() {
 		WebLookAndFeel.install();
 		WebLookAndFeel.initializeManagers();
+		hasLogined = false;
 		frmMainWindow = new JFrame();
 		frmMainWindow.setIconImage(Toolkit.getDefaultToolkit().getImage("images/mainwindow.ico"));
 		frmMainWindow.setTitle("DMS Manager");
@@ -133,8 +166,12 @@ public class MainWindow {
 		freshBtn.setActionCommand("");
 		freshBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dba.updateCache();
-				dp.updateData();
+				if (isHasLogined()) {
+					dba.updateCache();
+					dp.updateData();
+				} else {
+					JOptionPane.showMessageDialog(null, "You haven't logined, please login server before freshing!");
+				}				
 			}
 		});
 
@@ -200,14 +237,12 @@ public class MainWindow {
 		rightHGlue.setMaximumSize(new Dimension(1000, 0));
 		btnPanel.add(rightHGlue);
 
-		showFormsBtn = new JButton("show Forms");
-		
-		panel = new JPanel();
-		panel.setMaximumSize(new Dimension(100, 30));
-		panel.setPreferredSize(new Dimension(100, 23));
-		panel.setMinimumSize(new Dimension(100, 23));
-		btnPanel.add(panel);
-		panel.setLayout(new GridLayout(0, 1, 0, 0));
+		switchPanel = new JPanel();
+		switchPanel.setMaximumSize(new Dimension(100, 30));
+		switchPanel.setPreferredSize(new Dimension(100, 23));
+		switchPanel.setMinimumSize(new Dimension(100, 23));
+		btnPanel.add(switchPanel);
+		switchPanel.setLayout(new GridLayout(0, 1, 0, 0));
 		modeSwitch = new WebSwitch();
 		modeSwitch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -218,7 +253,7 @@ public class MainWindow {
 		modeSwitch.setPreferredSize(new Dimension(100, 23));
 		modeSwitch.setMaximumSize(new Dimension(100, 23));
 		modeSwitch.setMinimumSize(new Dimension(100, 20));
-		panel.add(modeSwitch);
+		switchPanel.add(modeSwitch);
 		modeSwitch.setMaximumWidth(100);
 		modeSwitch.setMaximumHeight(20);
 		modeSwitch.setPreferredWidth(100);
@@ -227,14 +262,49 @@ public class MainWindow {
 		modeSwitch.setMinimumHeight(20);
 
 		WebLabel wblblV = new WebLabel("VERTI");
+		wblblV.setBoldFont(true);
 		wblblV.setText("  VERTI");
 		WebLabel wblblH = new WebLabel("HORIZ");
-		wblblH.setText("  HORIZ");
+		wblblH.setText(" HORIZ");
 		wblblH.setBoldFont(true);
 		modeSwitch.setLeftComponent(wblblH);
 		modeSwitch.setRightComponent(wblblV);
-		modeSwitch.setRightComponent(wblblV );
-		
+		modeSwitch.setRightComponent(wblblV);
+
+		menuBar = new JMenuBar();
+		frmMainWindow.setJMenuBar(menuBar);
+
+		mnTool = new JMenu("Tool");
+		menuBar.add(mnTool);
+
+		mntmLogin = new JMenuItem("Login");
+		mntmLogin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				reLogin();
+			}
+		});
+		mnTool.add(mntmLogin);
+
+		mntmExit = new JMenuItem("Logout");
+		mntmExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				hasLogined = false;
+				dba.disConn();
+			}
+		});
+		mnTool.add(mntmExit);
+
+		mnAbout = new JMenu("About");
+		menuBar.add(mnAbout);
+
+		mntmAbout = new JMenuItem("About");
+		mntmAbout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null, "Copyright(c)2017 NWAFU\nchaoyanglius@outlook.com\nAll rights reserved.");
+			}
+		});
+		mnAbout.add(mntmAbout);
+
 		mlcp = new LineChartPanel("Month Form", "month", monthFormPanel.getPreferredSize());
 		SimpleDateFormat msdf = new SimpleDateFormat("MM");
 		mlcp.updateDataSet(createMonthDataSet(), msdf.format(dateField.getDate()));
@@ -267,7 +337,6 @@ public class MainWindow {
 		long upLimit = cdr.getTimeInMillis();
 		// System.out.println(lowLimit + "-" + upLimit);
 		Hashtable<Long, UserSet> ds = dp.getDateDataSet().getDateSet();
-		long d = lowLimit;
 
 		for (long day = lowLimit; day <= upLimit; day = day + 24 * 3600 * 1000) {
 			FormData fd = new FormData();
@@ -301,13 +370,13 @@ public class MainWindow {
 			cdr.set(Calendar.DAY_OF_MONTH, cdr.getActualMaximum(Calendar.DAY_OF_MONTH));
 			long upLimit = cdr.getTimeInMillis();
 			long dur = 0;
-			for (long day = lowLimit; day <= upLimit; day = day + 24 * 3600 * 1000) {			
+			for (long day = lowLimit; day <= upLimit; day = day + 24 * 3600 * 1000) {
 				UserSet us = ds.get(day);
 				if (us != null) {
 					for (UserInfo u : us.getList()) {
 						dur += u.getDuration();
-					}		
-				} 
+					}
+				}
 			}
 			dur /= 1000;
 			fd.setxAxisData(i);
@@ -315,5 +384,33 @@ public class MainWindow {
 			yearDataSet.add(fd);
 		}
 		return yearDataSet;
+	}
+
+	public boolean connDataBase() {
+		return dba.connDataBase();
+	}
+
+	public void updateCache() {
+		dp.updateData();
+	}
+
+	public void reLogin() {
+		ReturnValues value = new ReturnValues(null, null, false);
+		Login lg = new Login();
+		try {
+			lg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			lg.setModal(true);
+			value = lg.showDialog();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		if (value.btnValue) {
+			MainWindow window = new MainWindow();
+			window.getDba().SetLogInfo(value.usr, value.pwd);
+			if (window.connDataBase()) {
+				window.setHasLogined(true);
+			}
+		}
 	}
 }

@@ -3,39 +3,21 @@
  */
 package dms.manger.chart;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Paint;
-import java.awt.RenderingHints;
-import java.text.NumberFormat;
+import java.awt.*;
 import java.util.ArrayList;
-import java.util.Date;
 
 import javax.swing.JFrame;
 
 import org.jfree.chart.*;
-import org.jfree.chart.axis.DateAxis;
-import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.labels.ItemLabelAnchor;
-import org.jfree.chart.labels.ItemLabelPosition;
-import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
-import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.DefaultDrawingSupplier;
 import org.jfree.chart.plot.PieLabelLinkStyle;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
-import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.RectangleInsets;
-import org.jfree.ui.TextAnchor;
-
 import dms.manger.data.FormData;
-
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.time.*;
+
 
 /**
  * @author bird

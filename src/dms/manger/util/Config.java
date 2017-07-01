@@ -10,7 +10,6 @@ public class Config
    public Config(String fp)
    {
 	configFile = new Properties();
-	String filePath = fp;
 	
 	try {
 		input = new FileInputStream(fp);
