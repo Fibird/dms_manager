@@ -9,6 +9,7 @@ import javax.swing.table.DefaultTableModel;
 
 import com.alee.extended.date.WebDateField;
 import com.alee.laf.WebLookAndFeel;
+import com.alee.laf.label.WebLabel;
 import com.alee.laf.panel.WebPanel;
 import com.alee.laf.splitpane.WebSplitPane;
 import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
@@ -18,6 +19,8 @@ import dms.manger.data.FormData;
 import dms.manger.data.UserInfo;
 import dms.manger.data.UserSet;
 import dms.manger.db.DBAccess;
+
+import com.alee.extended.button.WebSwitch;
 import com.alee.extended.date.DateSelectionListener;
 
 public class MainWindow {
@@ -30,6 +33,7 @@ public class MainWindow {
 	private JPanel btnPanel;
 	private JButton searchBtn;
 	private WebDateField dateField;
+	WebSwitch modeSwitch;
 	// private JScrollPanel tablePanel;
 	private JTable logInfoTable;
 	private DefaultTableModel logInfoTableModel;
@@ -42,6 +46,7 @@ public class MainWindow {
 	private JPanel yearFormPanel;
 	private LineChartPanel mlcp;
 	private LineChartPanel ylcp;
+	private JPanel panel;
 
 	/**
 	 * Launch the application.
@@ -81,21 +86,28 @@ public class MainWindow {
 		frmMainWindow = new JFrame();
 		frmMainWindow.setIconImage(Toolkit.getDefaultToolkit().getImage("images/mainwindow.ico"));
 		frmMainWindow.setTitle("DMS Manager");
-		frmMainWindow.setBounds(100, 100, 899, 600);
+		frmMainWindow.setBounds(100, 100, 924, 621);
 		frmMainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		infoPanel = new WebPanel();
 		formPanel = new WebPanel();
 		WebSplitPane splitPane = new WebSplitPane(HORIZONTAL_SPLIT, infoPanel, formPanel);
+		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setPreferredSize(new Dimension(400, 300));
+		tabbedPane.setMinimumSize(new Dimension(400, 300));
 		formPanel.add(tabbedPane, BorderLayout.CENTER);
 
 		monthFormPanel = new JPanel();
+		monthFormPanel.setMinimumSize(new Dimension(400, 300));
+		monthFormPanel.setPreferredSize(new Dimension(400, 300));
 		monthFormPanel.setLayout(new BorderLayout(0, 0));
 		tabbedPane.addTab("Month Form", null, monthFormPanel, null);
 
 		yearFormPanel = new JPanel();
+		yearFormPanel.setPreferredSize(new Dimension(400, 300));
+		yearFormPanel.setMinimumSize(new Dimension(400, 300));
 		yearFormPanel.setLayout(new BorderLayout(0, 0));
 		tabbedPane.addTab("Year Form", null, yearFormPanel, null);
 		splitPane.setContinuousLayout(true);
@@ -108,6 +120,8 @@ public class MainWindow {
 		logInfoTable = new JTable(logInfoTableModel);
 
 		tableScrollPanel = new JScrollPane(logInfoTable);
+		tableScrollPanel.setPreferredSize(new Dimension(452, 248));
+		tableScrollPanel.setMinimumSize(new Dimension(248, 248));
 		infoPanel.add(tableScrollPanel);
 
 		btnPanel = new JPanel();
@@ -181,13 +195,45 @@ public class MainWindow {
 		btnPanel.add(searchBtn);
 
 		Component rightHGlue = Box.createHorizontalGlue();
-		rightHGlue.setMinimumSize(new Dimension(260, 0));
+		rightHGlue.setMinimumSize(new Dimension(250, 0));
 		rightHGlue.setPreferredSize(new Dimension(260, 0));
 		rightHGlue.setMaximumSize(new Dimension(1000, 0));
 		btnPanel.add(rightHGlue);
 
 		showFormsBtn = new JButton("show Forms");
-		btnPanel.add(showFormsBtn);
+		
+		panel = new JPanel();
+		panel.setMaximumSize(new Dimension(100, 30));
+		panel.setPreferredSize(new Dimension(100, 23));
+		panel.setMinimumSize(new Dimension(100, 23));
+		btnPanel.add(panel);
+		panel.setLayout(new GridLayout(0, 1, 0, 0));
+		modeSwitch = new WebSwitch();
+		modeSwitch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				splitPane.setOrientation(1 - splitPane.getOrientation());
+			}
+		});
+
+		modeSwitch.setPreferredSize(new Dimension(100, 23));
+		modeSwitch.setMaximumSize(new Dimension(100, 23));
+		modeSwitch.setMinimumSize(new Dimension(100, 20));
+		panel.add(modeSwitch);
+		modeSwitch.setMaximumWidth(100);
+		modeSwitch.setMaximumHeight(20);
+		modeSwitch.setPreferredWidth(100);
+		modeSwitch.setPreferredHeight(20);
+		modeSwitch.setMinimumWidth(100);
+		modeSwitch.setMinimumHeight(20);
+
+		WebLabel wblblV = new WebLabel("VERTI");
+		wblblV.setText("  VERTI");
+		WebLabel wblblH = new WebLabel("HORIZ");
+		wblblH.setText("  HORIZ");
+		wblblH.setBoldFont(true);
+		modeSwitch.setLeftComponent(wblblH);
+		modeSwitch.setRightComponent(wblblV);
+		modeSwitch.setRightComponent(wblblV );
 		
 		mlcp = new LineChartPanel("Month Form", "month", monthFormPanel.getPreferredSize());
 		SimpleDateFormat msdf = new SimpleDateFormat("MM");
