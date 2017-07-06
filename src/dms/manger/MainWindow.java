@@ -198,6 +198,7 @@ public class MainWindow {
 		dateField.addDateSelectionListener(new DateSelectionListener() {
 			public void dateSelected(Date arg0) {
 				SimpleDateFormat msdf = new SimpleDateFormat("MM");
+				//System.out.println("test" + msdf.format(dateField.getDate()));
 				mlcp.updateDataSet(createMonthDataSet(), msdf.format(dateField.getDate()));
 				SimpleDateFormat ysdf = new SimpleDateFormat("yyyy");
 				ylcp.updateDataSet(createYearDataSet(), "Year " + ysdf.format(dateField.getDate()));
@@ -364,7 +365,7 @@ public class MainWindow {
 		cdr.setTime(dateField.getDate());
 		for (int i = 1; i <= 12; i++) {
 			FormData fd = new FormData();
-			cdr.set(Calendar.MONTH, i);
+			cdr.set(Calendar.MONTH, i - 1);
 			cdr.set(Calendar.DAY_OF_MONTH, 1);
 			long lowLimit = cdr.getTimeInMillis();
 			cdr.set(Calendar.DAY_OF_MONTH, cdr.getActualMaximum(Calendar.DAY_OF_MONTH));
