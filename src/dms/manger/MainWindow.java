@@ -306,12 +306,12 @@ public class MainWindow {
 		});
 		mnAbout.add(mntmAbout);
 
-		mlcp = new LineChartPanel("Month Form", "month", monthFormPanel.getPreferredSize());
+		mlcp = new LineChartPanel("Month Form", "day", monthFormPanel.getPreferredSize());
 		SimpleDateFormat msdf = new SimpleDateFormat("MM");
 		mlcp.updateDataSet(createMonthDataSet(), msdf.format(dateField.getDate()));
 		monthFormPanel.add(mlcp.getChartPanel(), BorderLayout.CENTER);
 		SimpleDateFormat ysdf = new SimpleDateFormat("yyyy");
-		ylcp = new LineChartPanel("Year Form", "year", yearFormPanel.getPreferredSize());
+		ylcp = new LineChartPanel("Year Form", "month", yearFormPanel.getPreferredSize());
 		ylcp.updateDataSet(createYearDataSet(), "Year " + ysdf.format(dateField.getDate()));
 		yearFormPanel.add(ylcp.getChartPanel(), BorderLayout.CENTER);
 	}

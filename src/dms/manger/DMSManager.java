@@ -28,9 +28,9 @@ public class DMSManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+		MainWindow window = new MainWindow();
 		if (value.btnValue) {			
-			MainWindow window = new MainWindow();
+			
 			window.getDba().SetLogInfo(value.usr, value.pwd);
 			if (window.connDataBase()) {
 				window.setHasLogined(true);
@@ -42,6 +42,11 @@ public class DMSManager {
 					window.frmMainWindow.setVisible(true);
 				}
 			}
-		}			
+		} else {
+			int res = JOptionPane.showConfirmDialog(null, "You can using me offline, do you want to login later?");
+			if (res == JOptionPane.YES_OPTION) {
+				window.frmMainWindow.setVisible(true);
+			}
+		}
 	}
 }

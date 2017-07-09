@@ -51,7 +51,7 @@ public class LineChartPanel {
 	
 	public void updateDataSet(ArrayList<FormData> formData, String s) {	
 		dataset.clear();
-		if (this.type.equals("month")) {
+		if (this.type.equals("day")) {
 			int m = Integer.parseInt(s);
 			chart.setTitle(months[m - 1] + " Month Form");
 			for (FormData f : formData) {
