@@ -14,11 +14,13 @@ public class MatchedLogRec {
 	int logoutTime;
 	int duration;
 	String logIp;
+	static int dataPackSize;
 	/**
 	 * 
 	 */
 	public MatchedLogRec() {
 		// TODO Auto-generated constructor stub
+		dataPackSize = 32 + 32 + 32 + 32 + 32 + 32;
 	}
 	/**
 	 * @param logName
@@ -77,5 +79,8 @@ public class MatchedLogRec {
 	}
 	public void setLogIp(String logIp) {
 		this.logIp = logIp;
+	}
+	public static int getDataPackSize() {
+		return dataPackSize;
 	}
 }
